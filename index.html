@@ -149,9 +149,9 @@
 <span class="sh4">from</span> telethon.utils <span class="sh4">import</span> get_input_peer
 
 <span class="sh3"># <b>(1)</b> Use your own values here</span>
-api_id = <span class="sh1">12345</span>
+api_id   = <span class="sh1">12345</span>
 api_hash = <span class="sh2">'0123456789abcdef0123456789abcdef'</span>
-phone_number = <span class="sh2">'+34600000000'</span>
+phone    = <span class="sh2">'+34600000000'</span>
 
 <span class="sh3"># <b>(2)</b> Create the client and connect</span>
 client = TelegramClient(<span class="sh2">'username'</span>, api_id, api_hash)
@@ -205,10 +205,11 @@ function updateSearch() {
         contentDiv.style.display = "none";
         searchDiv.style.display = "";
 
+        var query = searchBox.value.toLowerCase();
         var foundRequests = [];
         var foundRequestsu = [];
         for (var i = 0; i < requests.length; ++i) {
-            if (requests[i].toLowerCase().indexOf(searchBox.value) != -1) {
+            if (requests[i].toLowerCase().indexOf(query) != -1) {
                 foundRequests.push(requests[i]);
                 foundRequestsu.push(requestsu[i]);
             }
@@ -217,7 +218,7 @@ function updateSearch() {
         var foundTypes = [];
         var foundTypesu = [];
         for (var i = 0; i < types.length; ++i) {
-            if (types[i].toLowerCase().indexOf(searchBox.value) != -1) {
+            if (types[i].toLowerCase().indexOf(query) != -1) {
                 foundTypes.push(types[i]);
                 foundTypesu.push(typesu[i]);
             }
