@@ -32,6 +32,7 @@ class ConnectionMode(Enum):
     TCP_INTERMEDIATE = 2
     TCP_ABRIDGED = 3
     TCP_OBFUSCATED = 4
+    HTTP = 5
 
 
 class Connection:
@@ -65,6 +66,10 @@ class Connection:
                       ConnectionMode.TCP_OBFUSCATED):
             setattr(self, 'send', self._send_abridged)
             setattr(self, 'recv', self._recv_abridged)
+
+        elif mode == ConnectionMode.HTTP:
+            setattr(self, 'send', self._send_http)
+            setattr(self, 'recv', self._recv_http)
 
         # Writing and reading from the socket
         if mode == ConnectionMode.TCP_OBFUSCATED:
@@ -166,6 +171,37 @@ class Connection:
 
         return self.read(length << 2)
 
+    def _recv_http(self, **kwargs):
+        headers = []
+        length = 0
+        close = False
+        while True:
+            current_header = [' ']
+            while current_header[-1] != '\n':
+                current_header.append(self.read(1))
+            current_header = ''.join(current_header).strip()
+            if not current_header:
+                break
+
+            print(current_header)
+            if current_header.startswith('Content-Length: '):
+                length = int(current_header[16:])
+
+            elif current_header.startswith('Connection: close'):
+                close = True
+
+            headers.append(current_header)
+        data = self.read(length)
+        if headers[0] != 'HTTP/1.1 200 OK':
+            # TODO Raise with this
+            print('RPC ERROR:', headers[0])
+
+        if close:
+            # TODO Reopen connection
+            raise ValueError('Not implemented')
+
+        return data
+
     # endregion
 
     # region Send message implementations
@@ -195,6 +231,17 @@ class Connection:
             length = b'\x7f' + int.to_bytes(length, 3, 'little')
 
         self.write(length + message)
+
+    def _send_http(self, message):
+        self.write(b''.join((
+            b'POST /apiw1 HTTP/1.1\r\nHost: ',
+            self.ip.encode('ascii'),  # TODO Need IP?
+            b'\r\nContent-Type: application/x-www-form-urlencoded'
+            b'\r\nConnection: keep-alive'
+            b'\r\nContent-Length: ',
+            str(len(message)).encode('ascii'),
+            b'\r\n\r\n'
+        )))
 
     # endregion
 
