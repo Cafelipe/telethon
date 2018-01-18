@@ -3,14 +3,17 @@ from datetime import datetime, date
 from threading import Event
 
 
-from threading import Event
+from threading import Event, Lock
 import traceback
 import os
 
 
+_lock = Lock()
+_handle = open(os.path.expanduser('~/telethon.log'), 'w')
+
+
 class LoggingEvent:
     def __init__(self, t):
-        self.o = open(os.path.expanduser('~/telethon.log'), 'w')
         self.e = Event()
         self.t = type(t).__name__
 
@@ -18,8 +21,10 @@ class LoggingEvent:
         for fs in traceback.extract_stack():
             assert isinstance(fs, traceback.FrameSummary)
             if 'confirm_received.set()' in fs.line:
-                self.o.write('Set {} at {}:{}, {}: {}\n'.format(self.t, fs.filename.split('/')[-1], fs.lineno, fs.name, fs.line))
-        self.o.flush()
+                with _lock:
+                    _handle.write('Set {} at {}:{}, {}: {}\n'.format(self.t, fs.filename.split('/')[-1], fs.lineno, fs.name, fs.line))
+                    _handle.flush()
+                    return
 
     def clear(self):
         self._log('CLEARING')
