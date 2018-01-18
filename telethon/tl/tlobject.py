@@ -3,9 +3,42 @@ from datetime import datetime, date
 from threading import Event
 
 
+from threading import Event
+import traceback
+import os
+
+
+class LoggingEvent:
+    def __init__(self, t):
+        self.o = open(os.path.expanduser('~/telethon.log'), 'w')
+        self.e = Event()
+        self.t = type(t).__name__
+
+    def _log(self, k):
+        for fs in traceback.extract_stack():
+            assert isinstance(fs, traceback.FrameSummary)
+            if 'confirm_received.set()' in fs.line:
+                self.o.write('Set {} at {}:{}, {}: {}\n'.format(self.t, fs.filename.split('/')[-1], fs.lineno, fs.name, fs.line))
+        self.o.flush()
+
+    def clear(self):
+        self._log('CLEARING')
+        return self.e.clear()
+
+    def set(self):
+        self._log('SETTING')
+        return self.e.set()
+
+    def is_set(self):
+        return self.e.is_set()
+
+    def wait(self, *a, **k):
+        self.e.wait(*a, **k)
+
+
 class TLObject:
     def __init__(self):
-        self.confirm_received = Event()
+        self.confirm_received = LoggingEvent(self)
         self.rpc_error = None
 
         # These should be overrode
