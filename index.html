@@ -51,8 +51,8 @@ users.getUsers#0d91a548 id:Vector&lt;InputUser&gt; = Vector&lt;User&gt;</pre>
     </ul>
 
     <h3 id="methods">Methods</h3>
-    <p>Currently there are <b>251 methods</b> available for the layer
-    74. The complete list can be seen <a href="methods/index.html">here</a>.
+    <p>Currently there are <b>{method_count} methods</b> available for the layer
+    {layer}. The complete list can be seen <a href="methods/index.html">here</a>.
     <br /><br />
     Methods, also known as <i>requests</i>, are used to interact with the
     Telegram API itself and are invoked through <code>client(Request(...))</code>.
@@ -62,7 +62,7 @@ users.getUsers#0d91a548 id:Vector&lt;InputUser&gt; = Vector&lt;User&gt;</pre>
     some dialogs, users, etc.</p>
 
     <h3 id="types">Types</h3>
-    <p>Currently there are <b>231 types</b>. You can see the full
+    <p>Currently there are <b>{type_count} types</b>. You can see the full
     list <a href="types/index.html">here</a>.</p>
 
     <p>The Telegram types are the <i>abstract</i> results that you receive
@@ -76,7 +76,7 @@ users.getUsers#0d91a548 id:Vector&lt;InputUser&gt; = Vector&lt;User&gt;</pre>
     an instance of it by using one of its, possibly multiple, constructors.</p>
 
     <h3 id="constructors">Constructors</h3>
-    <p>Currently there are <b>635 constructors</b>. You can see
+    <p>Currently there are <b>{constructor_count} constructors</b>. You can see
     the full list <a href="constructors/index.html">here</a>.</p>
 
     <p>Constructors are the way you can create instances of the abstract types
@@ -130,8 +130,12 @@ users.getUsers#0d91a548 id:Vector&lt;InputUser&gt; = Vector&lt;User&gt;</pre>
     </li>
     <li id="date"><b>date</b>:
         Although this type is internally used as an <code>int</code>,
-        you can pass a <code>datetime</code> object instead to work
-        with date parameters.
+        you can pass a <code>datetime</code> or <code>date</code> object
+        instead to work with date parameters.<br />
+        Note that the library uses the date in <b>UTC+0</b>, since timezone
+        conversion is not responsibility of the library. Furthermore, this
+        eases converting into any other timezone without the need for a middle
+        step.
     </li>
     </ul>
 
